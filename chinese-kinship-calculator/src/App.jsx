@@ -61,8 +61,8 @@ function App() {
     <div className="min-h-screen bg-[#1c1c1e] flex items-center justify-center p-6">
       <div className="w-full max-w-[340px]">
         {/* App Title with Humorous Styling - Centered */}
-        <div className="mb-8 text-center flex flex-col items-center justify-center">
-          <h1 className="text-5xl font-extrabold tracking-wider mb-2" style={{
+        <div className="mb-8 w-full flex flex-col items-center justify-center mx-auto">
+          <h1 className="text-5xl font-extrabold tracking-wider mb-2 text-center w-full" style={{
             fontFamily: "'Comic Sans MS', 'Chalkboard SE', cursive",
             background: 'linear-gradient(45deg, #FF6B6B, #FFE66D, #95E1D3, #F38181, #AA96DA)',
             backgroundSize: '300%',
@@ -73,7 +73,7 @@ function App() {
           }}>
             叫对了吗？
           </h1>
-          <div className="text-sm text-white/60 italic">~ 我也不知道你们之间啥关系 ~</div>
+          <div className="text-sm text-white/60 italic w-full text-center">~ 我也不知道你们之间啥关系 ~</div>
         </div>
 
         {/* Calculator Body - macOS style */}
