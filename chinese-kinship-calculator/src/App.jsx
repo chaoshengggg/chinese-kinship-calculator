@@ -1,198 +1,162 @@
 import { useState } from 'react'
-import { resolveKinship, getAvailableRelationships } from './utils/kinshipResolver'
+import { BUTTON_SECTIONS, isCousinScenario, resolveRelationship } from './utils/resolver'
 import './App.css'
 
 function App() {
-  const [relationships, setRelationships] = useState([])
-  const [result, setResult] = useState('')
+  const [path, setPath] = useState([])
+  const [result, setResult] = useState(null)  // null = not computed yet, '' = empty result, string = answer
+  const [relativeAge, setRelativeAge] = useState(null) // 'older' | 'younger' | null
 
-  const handleRelationshipClick = (rel) => {
-    const newRelationships = [...relationships, rel]
-    setRelationships(newRelationships)
-    const resolved = resolveKinship(newRelationships)
+  const tokenToLabel = Object.fromEntries(
+    BUTTON_SECTIONS.flatMap((s) => s.buttons.map((b) => [b.token, b.label])),
+  )
+
+  const handleTokenClick = (token) => {
+    // If we just showed a result, clear and start fresh (calculator behavior)
+    if (result !== null) {
+      setPath([token])
+      setResult(null)
+      setRelativeAge(null)
+    } else {
+      setPath([...path, token])
+    }
+  }
+
+  const handleEquals = () => {
+    if (path.length === 0) return
+    const resolved = resolveRelationship(path, relativeAge)
     setResult(resolved)
   }
 
   const handleClear = () => {
-    setRelationships([])
-    setResult('')
+    setPath([])
+    setResult(null)
+    setRelativeAge(null)
   }
 
   const handleBackspace = () => {
-    if (relationships.length > 0) {
-      const newRelationships = relationships.slice(0, -1)
-      setRelationships(newRelationships)
-      if (newRelationships.length === 0) {
-        setResult('')
-      } else {
-        const resolved = resolveKinship(newRelationships)
-        setResult(resolved)
+    if (result !== null) {
+      setResult(null)
+    }
+    if (path.length > 0) {
+      const newPath = path.slice(0, -1)
+      setPath(newPath)
+      if (!isCousinScenario(newPath)) {
+        setRelativeAge(null)
       }
     }
   }
 
-  const availableRelationships = getAvailableRelationships()
+  const equationDisplay = path.length > 0
+    ? path
+      .map((token) => tokenToLabel[token] ?? token)
+      .join(' → ')
+    : ''
 
-  // Group relationships by category for better UI organization
-  const groupedRelationships = {
-    parents: availableRelationships.filter(r => ['爸爸', '妈妈'].includes(r)),
-    siblings: availableRelationships.filter(r => ['哥哥', '弟弟', '姐姐', '妹妹'].includes(r)),
-    grandparents: availableRelationships.filter(r => ['爷爷', '奶奶', '外公', '外婆'].includes(r)),
-    unclesAunts: availableRelationships.filter(r => ['伯伯', '叔叔', '姑姑', '舅舅', '阿姨'].includes(r)),
-    cousins: availableRelationships.filter(r => ['堂哥', '堂弟', '堂姐', '堂妹', '表哥', '表弟', '表姐', '表妹'].includes(r)),
-  }
+  const needsRelativeAge = isCousinScenario(path)
+  const canCompute = path.length > 0 && (!needsRelativeAge || !!relativeAge)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Title */}
-        <h1 className="text-3xl font-bold text-center text-white mb-2">
-          华人关系计算器
+    <div className="min-h-screen bg-[#1c1c1e] flex items-center justify-center p-6">
+      <div className="w-full max-w-[340px]">
+        {/* App Title */}
+        <h1 className="text-2xl font-semibold text-center text-white/90 mb-6 tracking-tight">
+          叫对了吗？
         </h1>
-        <p className="text-center text-gray-400 text-sm mb-6">
-          Chinese Kinship Calculator
-        </p>
 
-        {/* Calculator Display */}
-        <div className="bg-gray-800 rounded-lg shadow-2xl p-6 mb-4">
-          {/* Display Screen */}
-          <div className="bg-gray-900 rounded-lg p-4 mb-4 min-h-[120px] flex flex-col justify-end">
-            {/* Relationship Chain */}
-            <div className="text-gray-400 text-sm mb-2 min-h-[20px]">
-              {relationships.length > 0 ? (
-                <span className="flex flex-wrap gap-1">
-                  {relationships.map((rel, index) => (
-                    <span key={index} className="text-gray-500">
-                      {rel}
-                      {index < relationships.length - 1 && <span className="mx-1">的</span>}
-                    </span>
-                  ))}
-                </span>
-              ) : (
-                <span className="text-gray-600">输入关系...</span>
-              )}
+        {/* Calculator Body - macOS style */}
+        <div className="bg-[#2d2d2f] rounded-[20px] p-5 shadow-2xl border border-white/5">
+          {/* Display */}
+          <div className="bg-[#1c1c1e] rounded-2xl p-5 mb-5 min-h-[100px] flex flex-col justify-end">
+            {/* Equation line */}
+            <div className="text-white/50 text-right text-lg font-light min-h-[28px] mb-1 tabular-nums">
+              {equationDisplay || ' '}
             </div>
-            
-            {/* Result Display */}
-            <div className="text-white text-3xl font-bold text-right break-all">
-              {result || '0'}
+            {/* Result line - only show when = is pressed */}
+            <div className="text-white text-4xl font-light text-right tabular-nums truncate">
+              {result !== null ? result : '0'}
             </div>
           </div>
 
-          {/* Control Buttons */}
-          <div className="grid grid-cols-2 gap-2 mb-4">
-            <button
-              onClick={handleClear}
-              className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 active:scale-95"
-            >
-              清除 (C)
-            </button>
-            <button
-              onClick={handleBackspace}
-              className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 active:scale-95"
-            >
-              删除 (⌫)
-            </button>
+          {/* Older/Younger selector (only for cousin scenarios) */}
+          {needsRelativeAge && (
+            <div className="mb-4 bg-[#1c1c1e] rounded-2xl p-4 border border-white/5">
+              <div className="text-white/80 text-sm mb-2">
+                这个人比你年纪？
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setRelativeAge('older')}
+                  className={`calc-btn ${
+                    relativeAge === 'older'
+                      ? 'bg-[#ff9f0a] hover:bg-[#ffb340] active:bg-[#cc7e08]'
+                      : 'bg-[#505050] hover:bg-[#5a5a5c] active:bg-[#3d3d3f]'
+                  }`}
+                >
+                  大
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRelativeAge('younger')}
+                  className={`calc-btn ${
+                    relativeAge === 'younger'
+                      ? 'bg-[#ff9f0a] hover:bg-[#ffb340] active:bg-[#cc7e08]'
+                      : 'bg-[#505050] hover:bg-[#5a5a5c] active:bg-[#3d3d3f]'
+                  }`}
+                >
+                  小
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Button Grid */}
+          <div className="space-y-4">
+            {/* Row 1: Clear, Backspace, spacer, Equals */}
+            <div className="grid grid-cols-4 gap-2">
+              <button
+                onClick={handleClear}
+                className="calc-btn bg-[#505050] hover:bg-[#5a5a5c] active:bg-[#3d3d3f]"
+              >
+                清除
+              </button>
+              <button
+                onClick={handleBackspace}
+                className="calc-btn bg-[#505050] hover:bg-[#5a5a5c] active:bg-[#3d3d3f] col-span-2"
+              >
+                ⌫
+              </button>
+              <button
+                onClick={handleEquals}
+                disabled={!canCompute}
+                className="calc-btn bg-[#ff9f0a] hover:bg-[#ffb340] active:bg-[#cc7e08] disabled:opacity-50 disabled:cursor-not-allowed text-white"
+              >
+                =
+              </button>
+            </div>
+
+            {BUTTON_SECTIONS.map((section) => (
+              <div key={section.title} className="flex flex-col gap-1.5">
+                <div className="text-white/60 text-xs font-medium px-1">{section.title}</div>
+                <div className="grid grid-cols-4 gap-2">
+                  {section.buttons.map((b) => {
+                    const colSpan =
+                      section.buttons.length === 2 ? 'col-span-2' : ''
+                    return (
+                      <button
+                        key={b.token}
+                        onClick={() => handleTokenClick(b.token)}
+                        className={`calc-btn bg-[#505050] hover:bg-[#5a5a5c] active:bg-[#3d3d3f] ${colSpan}`}
+                      >
+                        {b.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
-
-          {/* Relationship Buttons */}
-          <div className="space-y-3">
-            {/* Parents */}
-            {groupedRelationships.parents.length > 0 && (
-              <div>
-                <div className="text-gray-400 text-xs mb-1 px-1">父母</div>
-                <div className="grid grid-cols-2 gap-2">
-                  {groupedRelationships.parents.map((rel) => (
-                    <button
-                      key={rel}
-                      onClick={() => handleRelationshipClick(rel)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 active:scale-95 shadow-md"
-                    >
-                      {rel}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Siblings */}
-            {groupedRelationships.siblings.length > 0 && (
-              <div>
-                <div className="text-gray-400 text-xs mb-1 px-1">兄弟姐妹</div>
-                <div className="grid grid-cols-4 gap-2">
-                  {groupedRelationships.siblings.map((rel) => (
-                    <button
-                      key={rel}
-                      onClick={() => handleRelationshipClick(rel)}
-                      className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-2 rounded-lg transition-all duration-200 active:scale-95 shadow-md text-sm"
-                    >
-                      {rel}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Grandparents */}
-            {groupedRelationships.grandparents.length > 0 && (
-              <div>
-                <div className="text-gray-400 text-xs mb-1 px-1">祖父母</div>
-                <div className="grid grid-cols-4 gap-2">
-                  {groupedRelationships.grandparents.map((rel) => (
-                    <button
-                      key={rel}
-                      onClick={() => handleRelationshipClick(rel)}
-                      className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-2 rounded-lg transition-all duration-200 active:scale-95 shadow-md text-sm"
-                    >
-                      {rel}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Uncles & Aunts */}
-            {groupedRelationships.unclesAunts.length > 0 && (
-              <div>
-                <div className="text-gray-400 text-xs mb-1 px-1">叔叔阿姨</div>
-                <div className="grid grid-cols-5 gap-2">
-                  {groupedRelationships.unclesAunts.map((rel) => (
-                    <button
-                      key={rel}
-                      onClick={() => handleRelationshipClick(rel)}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-2 rounded-lg transition-all duration-200 active:scale-95 shadow-md text-xs"
-                    >
-                      {rel}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Cousins */}
-            {groupedRelationships.cousins.length > 0 && (
-              <div>
-                <div className="text-gray-400 text-xs mb-1 px-1">堂表兄弟姐妹</div>
-                <div className="grid grid-cols-4 gap-2">
-                  {groupedRelationships.cousins.map((rel) => (
-                    <button
-                      key={rel}
-                      onClick={() => handleRelationshipClick(rel)}
-                      className="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-2 rounded-lg transition-all duration-200 active:scale-95 shadow-md text-sm"
-                    >
-                      {rel}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Instructions */}
-        <div className="text-center text-gray-500 text-xs">
-          <p>点击关系按钮来计算最终称呼</p>
-          <p className="mt-1">Click relationship buttons to calculate the final term</p>
         </div>
       </div>
     </div>

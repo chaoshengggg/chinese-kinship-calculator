@@ -1,2 +1,11 @@
-/* App-specific styles if needed */
-/* Most styling is handled by Tailwind CSS */
+/* macOS Calculator-style button */
+.calc-btn {
+  border-radius: 9999px;
+  padding: 0.75rem 0.5rem;
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background-color 0.15s;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
