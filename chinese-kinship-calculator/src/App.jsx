@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { BUTTON_SECTIONS, isCousinScenario, resolveRelationship } from './utils/resolver'
+import { playPronunciation } from './utils/pronounce'
 import './App.css'
 
 function App() {
@@ -73,8 +74,19 @@ function App() {
               {equationDisplay || ' '}
             </div>
             {/* Result line - only show when = is pressed */}
-            <div className="text-white text-4xl font-light text-right tabular-nums truncate">
+            <div className="text-white text-4xl font-light text-right tabular-nums truncate flex items-center justify-end gap-2">
               {result !== null ? result : '0'}
+              {result && (
+                <button
+                  aria-label="播放发音"
+                  onClick={() => playPronunciation(result)}
+                  className="ml-2 focus:outline-none"
+                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                >
+                  {/* Simple SVG volume icon */}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24"><path fill="#fff" d="M3 10v4h4l5 5V5l-5 5H3zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.06c1.48-.74 2.5-2.26 2.5-4.03zm2.5 0c0 2.76-1.68 5.1-4.06 6.08l1.43 1.43C18.07 18.07 20 15.28 20 12s-1.93-6.07-4.13-7.51l-1.43 1.43C17.32 6.9 19 9.24 19 12z"/></svg>
+                </button>
+              )}
             </div>
           </div>
 

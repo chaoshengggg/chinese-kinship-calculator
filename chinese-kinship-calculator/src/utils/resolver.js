@@ -5,7 +5,7 @@
 
 export const BUTTON_SECTIONS = [
   {
-    title: '祖父母（+2）',
+    title: '祖父母',
     buttons: [
       { label: '爷爷', token: 'paternal_grandfather' },
       { label: '奶奶', token: 'paternal_grandmother' },
@@ -14,14 +14,14 @@ export const BUTTON_SECTIONS = [
     ],
   },
   {
-    title: '父母（+1）',
+    title: '父母',
     buttons: [
       { label: '爸爸', token: 'father' },
       { label: '妈妈', token: 'mother' },
     ],
   },
   {
-    title: '兄弟姐妹（0）',
+    title: '兄弟姐妹',
     buttons: [
       { label: '哥哥', token: 'older_brother' },
       { label: '弟弟', token: 'younger_brother' },
@@ -30,7 +30,7 @@ export const BUTTON_SECTIONS = [
     ],
   },
   {
-    title: '子女（-1）',
+    title: '子女',
     buttons: [
       { label: '儿子', token: 'son' },
       { label: '女儿', token: 'daughter' },
