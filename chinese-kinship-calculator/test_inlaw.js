@@ -61,8 +61,8 @@ const testCases = [
   { path: ['husband'], expected: '老公', label: "Husband (single)" },
 
   // Invalid cases
-  { path: ['wife', 'father', 'brother', 'son'], expected: '暂不支持更深层的姻亲关系', label: "Too deep (>3)" },
-  { path: ['older_brother', 'husband'], expected: '暂时无法解析', label: "Invalid: older_brother + husband" },
+  { path: ['wife', 'father', 'brother', 'son'], expected: '关系太复杂，我也不敢乱叫', label: "Too deep (>3)" },
+  { path: ['older_brother', 'husband'], expected: '关系太复杂，我也不敢乱叫', label: "Invalid: older_brother + husband" },
 
   // Existing blood relations (sanity check)
   { path: ['father'], expected: '爸爸', label: "Father (existing)" },

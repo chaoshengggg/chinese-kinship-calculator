@@ -228,7 +228,7 @@ function resolveSpouseDirect(path) {
     if (t2 === 'younger_sister') return '姑仔'
   }
 
-  return '暂时无法解析'
+  return '关系太复杂，我也不敢乱叫'
 }
 
 /**
@@ -242,7 +242,7 @@ function resolveSpouseDirect(path) {
 function resolveSpouseBranch(path) {
   // Depth guard
   if (path.length > 3) {
-    return '暂不支持更深层的姻亲关系'
+    return '关系太复杂，我也不敢乱叫'
   }
 
   const [t1] = path
@@ -265,7 +265,7 @@ function resolveSpouseBranch(path) {
     if (result !== null) return result
   }
 
-  return '暂时无法解析'
+  return '关系太复杂，我也不敢乱叫'
 }
 
 // ============ SIBLING SPOUSE RESOLVER ============
@@ -314,7 +314,7 @@ function resolveFirstCousin(path, relativeAge) {
 
   const cousinGender = t3 === 'son' ? 'male' : 'female'
   const age = relativeAge === 'older' ? 'older' : relativeAge === 'younger' ? 'younger' : null
-  if (!age) return '暂时无法解析'
+  if (!age) return '关系太复杂，我也不敢乱叫'
 
   const title =
     cousinGender === 'male'
@@ -326,7 +326,7 @@ function resolveFirstCousin(path, relativeAge) {
         : '妹'
 
   // If someone passes an invalid path (e.g. t2 not sibling), just fail safe.
-  if (!(isBrother || isSister)) return '暂时无法解析'
+  if (!(isBrother || isSister)) return '关系太复杂，我也不敢乱叫'
   return `${familyPrefix}${title}`
 }
 
@@ -345,7 +345,7 @@ export function resolveRelationship(pathArray, relativeAge) {
   if (isSiblingSpouse(pathArray)) {
     const result = resolveSiblingSpouse(pathArray)
     if (result !== null) return result
-    return '暂时无法解析'
+    return '关系太复杂，我也不敢乱叫'
   }
 
   // First cousin: parent + parent's sibling + child
@@ -355,6 +355,6 @@ export function resolveRelationship(pathArray, relativeAge) {
 
   // Blood relations (direct mapping)
   const key = pathArray.join('_')
-  return relationshipMap[key] ?? '暂时无法解析'
+  return relationshipMap[key] ?? '关系太复杂，我也不敢乱叫'
 }
 

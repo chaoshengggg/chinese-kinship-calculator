@@ -9,10 +9,10 @@ const tests = [
   { path: ['wife', 'father'], expected: '岳父', name: '老婆 → 爸爸' },
   
   // INVALID combinations (should return error message, not null/"0")
-  { path: ['husband', 'paternal_grandmother'], expected: '暂时无法解析', name: '老公 → 奶奶' },
-  { path: ['wife', 'son'], expected: '暂时无法解析', name: '老婆 → 儿子' },
-  { path: ['wife', 'grandfather'], expected: '暂时无法解析', name: '老婆 → 爷爷' },
-  { path: ['husband', 'grandfather'], expected: '暂时无法解析', name: '老公 → 爷爷' },
+  { path: ['husband', 'paternal_grandmother'], expected: '关系太复杂，我也不敢乱叫', name: '老公 → 奶奶' },
+  { path: ['wife', 'son'], expected: '关系太复杂，我也不敢乱叫', name: '老婆 → 儿子' },
+  { path: ['wife', 'grandfather'], expected: '关系太复杂，我也不敢乱叫', name: '老婆 → 爷爷' },
+  { path: ['husband', 'grandfather'], expected: '关系太复杂，我也不敢乱叫', name: '老公 → 爷爷' },
 ]
 
 let passed = 0

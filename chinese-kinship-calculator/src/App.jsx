@@ -74,7 +74,7 @@ function App() {
               {equationDisplay || ' '}
             </div>
             {/* Result line - only show when = is pressed */}
-            <div className="text-white text-4xl font-light text-right tabular-nums truncate flex items-center justify-end gap-2">
+            <div className="text-white text-3xl font-light text-right tabular-nums flex items-center justify-end gap-2 break-words">
               {result !== null ? result : '0'}
               {result && (
                 <button
