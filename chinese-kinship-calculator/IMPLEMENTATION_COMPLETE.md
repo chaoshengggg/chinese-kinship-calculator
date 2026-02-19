@@ -18,12 +18,14 @@ Successfully implemented in-law (姻亲) relationship support for the Chinese Ki
 ### 1. Core Feature: 16 New Relationships
 
 #### Spouse's Parents (4)
+
 - 岳父 (Wife's father)
 - 岳母 (Wife's mother)
 - 公公 (Husband's father)
 - 婆婆 (Husband's mother)
 
 #### Spouse's Siblings (8)
+
 - 大舅子 (Wife's older brother)
 - 小舅子 (Wife's younger brother)
 - 姨子 (Wife's sister)
@@ -32,12 +34,14 @@ Successfully implemented in-law (姻亲) relationship support for the Chinese Ki
 - 姑仔 (Husband's sister)
 
 #### Sibling's Spouse (4)
+
 - 嫂子 (Brother's wife)
 - 弟媳 (Younger brother's wife)
 - 姐夫 (Sister's husband)
 - 妹夫 (Younger sister's husband)
 
 ### 2. UI Enhancement: 2 New Buttons
+
 - **老公** — Husband (token: `husband`)
 - **老婆** — Wife (token: `wife`)
 
@@ -55,6 +59,7 @@ resolveRelationship(path, age)
 ```
 
 **Benefits:**
+
 - ✅ Separation of concerns
 - ✅ Easy to test & debug
 - ✅ Extensible for future features
@@ -63,6 +68,7 @@ resolveRelationship(path, age)
 ### 4. Quality Assurance: Testing
 
 **Test Suite:** 23/23 Passing ✓
+
 ```
 ✓ Spouse's Parents: 4/4
 ✓ Spouse's Siblings: 8/8
@@ -73,6 +79,7 @@ resolveRelationship(path, age)
 ```
 
 **Build Status:**
+
 ```
 ✓ 32 modules transformed
 ✓ built in 472ms
@@ -81,13 +88,13 @@ resolveRelationship(path, age)
 
 ### 5. Documentation: 5 Files
 
-| File | Purpose |
-|------|---------|
-| **QUICK_START.md** | 30-second overview for everyone |
-| **IN_LAW_IMPLEMENTATION.md** | Detailed spec with rules & examples |
+| File                         | Purpose                                  |
+| ---------------------------- | ---------------------------------------- |
+| **QUICK_START.md**           | 30-second overview for everyone          |
+| **IN_LAW_IMPLEMENTATION.md** | Detailed spec with rules & examples      |
 | **ARCHITECTURE_DIAGRAMS.md** | Visual flows, decision trees, data flows |
-| **INLAW_SUMMARY.md** | Executive summary & testing results |
-| **IN_LAW_COMPLETE_GUIDE.md** | Comprehensive implementation guide |
+| **INLAW_SUMMARY.md**         | Executive summary & testing results      |
+| **IN_LAW_COMPLETE_GUIDE.md** | Comprehensive implementation guide       |
 
 Plus: `test_inlaw.js` (automated test suite)
 
@@ -96,6 +103,7 @@ Plus: `test_inlaw.js` (automated test suite)
 ## 🔑 Key Implementation Details
 
 ### Constraint: Max Depth = 2
+
 ```javascript
 // Supported
 ✓ wife → father        [depth 2]
@@ -111,6 +119,7 @@ if (path.length > 2) {
 ```
 
 ### Constraint: No User Gender Setting
+
 ```javascript
 // Instead of:  "User is male/female" → stored preference
 // We use:      Path context → inferred gender
@@ -120,6 +129,7 @@ husband → ...  implies user is female
 ```
 
 ### Constraint: Modular Resolvers
+
 ```javascript
 // NOT: One giant matrimap with 500+ entries
 // YES: 4 detection functions → 3 specialized resolvers
@@ -139,17 +149,18 @@ function resolveFirstCousin(path, age) { ... }
 
 ### All Scenarios Tested
 
-| Category | Paths | Status |
-|----------|-------|--------|
-| **Spouse's Parents** | wife→father, wife→mother, husband→father, husband→mother | ✅ 4/4 |
-| **Spouse's Siblings** | wife→brother(+/-), wife→sister(+/-), husband→brother(+/-), husband→sister(+/-) | ✅ 8/8 |
-| **Sibling's Spouse** | brother(+/-)→wife, sister(+/-)→husband | ✅ 4/4 |
-| **Single Tokens** | wife, husband | ✅ 2/2 |
-| **Invalid Paths** | wife→father→brother, older_brother→husband | ✅ 2/2 |
-| **Existing Relations** | father, older_brother, son (sanity check) | ✅ 3/3 |
-| | | **✅ 23/23** |
+| Category               | Paths                                                                          | Status       |
+| ---------------------- | ------------------------------------------------------------------------------ | ------------ |
+| **Spouse's Parents**   | wife→father, wife→mother, husband→father, husband→mother                       | ✅ 4/4       |
+| **Spouse's Siblings**  | wife→brother(+/-), wife→sister(+/-), husband→brother(+/-), husband→sister(+/-) | ✅ 8/8       |
+| **Sibling's Spouse**   | brother(+/-)→wife, sister(+/-)→husband                                         | ✅ 4/4       |
+| **Single Tokens**      | wife, husband                                                                  | ✅ 2/2       |
+| **Invalid Paths**      | wife→father→brother, older_brother→husband                                     | ✅ 2/2       |
+| **Existing Relations** | father, older_brother, son (sanity check)                                      | ✅ 3/3       |
+|                        |                                                                                | **✅ 23/23** |
 
 Run tests:
+
 ```bash
 node test_inlaw.js
 # Output: Passed: 23/23 ✓
@@ -160,6 +171,7 @@ node test_inlaw.js
 ## 📁 Files Modified
 
 ### Modified (1 file)
+
 - **`src/utils/resolver.js`** — Core logic update
   - Added spouse detection functions
   - Added sibling spouse detection
@@ -168,6 +180,7 @@ node test_inlaw.js
   - Added husband/wife buttons
 
 ### Created (6 files)
+
 1. **QUICK_START.md** — 30-second guide
 2. **IN_LAW_IMPLEMENTATION.md** — Detailed spec
 3. **ARCHITECTURE_DIAGRAMS.md** — Visual documentation
@@ -176,9 +189,11 @@ node test_inlaw.js
 6. **test_inlaw.js** — Test harness
 
 ### Updated (1 file)
+
 - **README.md** — Added feature overview & links
 
 ### Unchanged
+
 - `src/App.jsx` — No changes needed!
 - `src/App.css`, `index.css` — No style changes
 - All other files — No modifications
@@ -190,6 +205,7 @@ node test_inlaw.js
 ## 🚀 Deployment Ready
 
 ### Build Status
+
 ```bash
 npm run build
 # ✓ built in 472ms
@@ -197,6 +213,7 @@ npm run build
 ```
 
 ### Deployment Steps
+
 ```bash
 # Stage changes
 git add .
@@ -216,6 +233,7 @@ git push
 ```
 
 ### Verification Post-Deploy
+
 ```bash
 # Visit your app at:
 # https://your-app.vercel.app
@@ -231,15 +249,16 @@ git push
 ## 💡 Why This Architecture?
 
 ### Problem: Previous Approach (Simple Map)
+
 ```javascript
 const relationshipMap = {
-  'wife_father': '岳父',
-  'wife_mother': '岳母',
-  'husband_father': '公公',
-  'husband_mother': '婆婆',
-  'wife_older_brother': '大舅子',
+  wife_father: "岳父",
+  wife_mother: "岳母",
+  husband_father: "公公",
+  husband_mother: "婆婆",
+  wife_older_brother: "大舅子",
   // ... 500+ more entries ...
-}
+};
 
 // Issues:
 // ❌ Giant, hard to maintain
@@ -249,14 +268,15 @@ const relationshipMap = {
 ```
 
 ### Solution: Our Approach (Modular Logic)
+
 ```javascript
 function isSpouseBranch(path) {
-  return path[0] === 'wife' || path[0] === 'husband'
+  return path[0] === "wife" || path[0] === "husband";
 }
 
 function resolveSpouseBranch(path) {
-  if (path[1] === 'father') {
-    return path[0] === 'wife' ? '岳父' : '公公'
+  if (path[1] === "father") {
+    return path[0] === "wife" ? "岳父" : "公公";
   }
   // ... clear, readable logic ...
 }
@@ -275,6 +295,7 @@ function resolveSpouseBranch(path) {
 ### Easy Additions (Architecture Supports)
 
 #### 1. **Spouse's Nieces/Nephews**
+
 ```javascript
 // Update depth check from 2 to 3
 // Add logic for: wife → older_brother → daughter
@@ -283,6 +304,7 @@ function resolveSpouseBranch(path) {
 ```
 
 #### 2. **Same-Sex Partnerships**
+
 ```javascript
 // Add partner_a, partner_b tokens
 // Update detection logic
@@ -291,6 +313,7 @@ function resolveSpouseBranch(path) {
 ```
 
 #### 3. **Divorced/Remarried States**
+
 ```javascript
 // Add ex-spouse tracking
 // More complex state management
@@ -310,6 +333,7 @@ function resolveSpouseBranch(path) {
 ## 📚 Documentation Quality
 
 ### Covered Topics
+
 - ✅ Overview & quick start
 - ✅ Detailed specification
 - ✅ Architecture diagrams
@@ -320,6 +344,7 @@ function resolveSpouseBranch(path) {
 - ✅ Limitations & boundaries
 
 ### Documentation Files
+
 1. **QUICK_START.md** — Read this first
 2. **IN_LAW_IMPLEMENTATION.md** — Technical spec
 3. **ARCHITECTURE_DIAGRAMS.md** — Visual learners start here
@@ -347,6 +372,7 @@ function resolveSpouseBranch(path) {
 ## 🎉 Summary
 
 ### In Numbers
+
 - **16 relationships** added
 - **2 buttons** added to UI
 - **4 detection functions** created
@@ -358,9 +384,11 @@ function resolveSpouseBranch(path) {
 - **0 errors**
 
 ### In Words
+
 Successfully delivered a production-ready in-law relationship feature with clean, modular architecture, comprehensive testing, and excellent documentation.
 
 ### Ready to Deploy
+
 ✅ Yes. All systems go. 🚀
 
 ---

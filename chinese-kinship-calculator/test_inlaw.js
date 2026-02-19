@@ -31,12 +31,37 @@ const testCases = [
   { path: ['older_sister', 'husband'], expected: '姐夫', label: "Older sister's husband" },
   { path: ['younger_sister', 'husband'], expected: '妹夫', label: "Younger sister's husband" },
 
+  // Spouse's Parent's Siblings (Depth 3)
+  // Wife's side - Mother's siblings
+  { path: ['wife', 'mother', 'older_brother'], expected: '舅公', label: "Wife's mother's older brother (舅公)" },
+  { path: ['wife', 'mother', 'younger_brother'], expected: '舅公', label: "Wife's mother's younger brother (舅公)" },
+  { path: ['wife', 'mother', 'older_sister'], expected: '姨婆', label: "Wife's mother's older sister (姨婆)" },
+  { path: ['wife', 'mother', 'younger_sister'], expected: '姨婆', label: "Wife's mother's younger sister (姨婆)" },
+
+  // Wife's side - Father's siblings
+  { path: ['wife', 'father', 'older_brother'], expected: '伯公', label: "Wife's father's older brother (伯公)" },
+  { path: ['wife', 'father', 'younger_brother'], expected: '叔公', label: "Wife's father's younger brother (叔公)" },
+  { path: ['wife', 'father', 'older_sister'], expected: '姑婆', label: "Wife's father's older sister (姑婆)" },
+  { path: ['wife', 'father', 'younger_sister'], expected: '姑婆', label: "Wife's father's younger sister (姑婆)" },
+
+  // Husband's side - Mother's siblings
+  { path: ['husband', 'mother', 'older_brother'], expected: '舅公', label: "Husband's mother's older brother (舅公)" },
+  { path: ['husband', 'mother', 'younger_brother'], expected: '舅公', label: "Husband's mother's younger brother (舅公)" },
+  { path: ['husband', 'mother', 'older_sister'], expected: '姨婆', label: "Husband's mother's older sister (姨婆)" },
+  { path: ['husband', 'mother', 'younger_sister'], expected: '姨婆', label: "Husband's mother's younger sister (姨婆)" },
+
+  // Husband's side - Father's siblings
+  { path: ['husband', 'father', 'older_brother'], expected: '伯公', label: "Husband's father's older brother (伯公)" },
+  { path: ['husband', 'father', 'younger_brother'], expected: '叔公', label: "Husband's father's younger brother (叔公)" },
+  { path: ['husband', 'father', 'older_sister'], expected: '姑婆', label: "Husband's father's older sister (姑婆)" },
+  { path: ['husband', 'father', 'younger_sister'], expected: '姑婆', label: "Husband's father's younger sister (姑婆)" },
+
   // Single tokens
   { path: ['wife'], expected: '老婆', label: "Wife (single)" },
   { path: ['husband'], expected: '老公', label: "Husband (single)" },
 
   // Invalid cases
-  { path: ['wife', 'father', 'brother'], expected: '暂不支持更深层的姻亲关系', label: "Too deep (>2)" },
+  { path: ['wife', 'father', 'brother', 'son'], expected: '暂不支持更深层的姻亲关系', label: "Too deep (>3)" },
   { path: ['older_brother', 'husband'], expected: '暂时无法解析', label: "Invalid: older_brother + husband" },
 
   // Existing blood relations (sanity check)

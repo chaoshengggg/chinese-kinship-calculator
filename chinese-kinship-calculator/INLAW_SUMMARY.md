@@ -9,6 +9,7 @@ All in-law (姻亲) relationship support has been successfully added to the Chin
 ## What Was Added
 
 ### 1. **New UI Buttons**
+
 - **老公** (husband) — token: `husband`
 - **老婆** (wife) — token: `wife`
 - Located in new "姻亲" section at the bottom
@@ -16,12 +17,14 @@ All in-law (姻亲) relationship support has been successfully added to the Chin
 ### 2. **Supported In-Law Scenarios** (All 3 Categories)
 
 #### ✅ A) Spouse's Parents (4 relationships)
+
 - `wife` → `father` = 岳父
 - `wife` → `mother` = 岳母
 - `husband` → `father` = 公公
 - `husband` → `mother` = 婆婆
 
 #### ✅ B) Spouse's Siblings (8 relationships)
+
 - `wife` → `older_brother` = 大舅子
 - `wife` → `younger_brother` = 小舅子
 - `wife` → `older_sister` = 姨子
@@ -32,6 +35,7 @@ All in-law (姻亲) relationship support has been successfully added to the Chin
 - `husband` → `younger_sister` = 姑仔
 
 #### ✅ C) Sibling's Spouse (4 relationships)
+
 - `older_brother` → `wife` = 嫂子
 - `younger_brother` → `wife` = 弟媳
 - `older_sister` → `husband` = 姐夫
@@ -60,29 +64,31 @@ resolveSpouseBranch() resolveSiblingSpouse() resolveFirstCousin()  mapLookup
 ### Key Functions
 
 #### Detection Functions
+
 ```javascript
-isSpouseBranch(path)        // path[0] === 'wife' || 'husband'
-isSiblingSpouse(path)       // sibling + spouse pair
-isCousinScenario(path)      // existing: parent + sibling + child
+isSpouseBranch(path); // path[0] === 'wife' || 'husband'
+isSiblingSpouse(path); // sibling + spouse pair
+isCousinScenario(path); // existing: parent + sibling + child
 ```
 
 #### Resolution Functions
+
 ```javascript
-resolveSpouseBranch(path)      // A) & B) spouse branch logic
-resolveSiblingSpouse(path)     // C) sibling's spouse logic
-resolveFirstCousin(path, age)  // existing cousin logic
-resolveRelationship(path, age) // main router
+resolveSpouseBranch(path); // A) & B) spouse branch logic
+resolveSiblingSpouse(path); // C) sibling's spouse logic
+resolveFirstCousin(path, age); // existing cousin logic
+resolveRelationship(path, age); // main router
 ```
 
 ### Design Constraints Met ✓
 
-| Constraint | Status | How |
-|-----------|--------|-----|
-| No global gender selection | ✓ | Path context infers user gender |
-| No hardcoded full paths | ✓ | Conditional logic, not string maps |
-| No deep spouse chaining | ✓ | Max depth = 2, enforced in resolveSpouseBranch() |
-| Keeps resolver modular | ✓ | 4 separate detection + 3 separate resolvers |
-| Max depth after spouse = 2 | ✓ | Returns error for path.length > 2 |
+| Constraint                 | Status | How                                              |
+| -------------------------- | ------ | ------------------------------------------------ |
+| No global gender selection | ✓      | Path context infers user gender                  |
+| No hardcoded full paths    | ✓      | Conditional logic, not string maps               |
+| No deep spouse chaining    | ✓      | Max depth = 2, enforced in resolveSpouseBranch() |
+| Keeps resolver modular     | ✓      | 4 separate detection + 3 separate resolvers      |
+| Max depth after spouse = 2 | ✓      | Returns error for path.length > 2                |
 
 ---
 
@@ -102,6 +108,7 @@ Total:                  23/23 ✓
 ```
 
 Run tests yourself:
+
 ```bash
 node test_inlaw.js
 ```
@@ -111,6 +118,7 @@ node test_inlaw.js
 ## How It Works
 
 ### Example 1: Wife's Father
+
 ```
 User clicks: 老婆 → 爸爸 → =
             ↓
@@ -125,6 +133,7 @@ resolveSpouseBranch(['wife', 'father'])
 ```
 
 ### Example 2: Older Brother's Wife
+
 ```
 User clicks: 哥哥 → 老婆 → =
             ↓
@@ -140,6 +149,7 @@ resolveSiblingSpouse(['older_brother', 'wife'])
 ```
 
 ### Example 3: Invalid Path (Too Deep)
+
 ```
 User clicks: 老婆 → 爸爸 → 哥哥 → =
             ↓
@@ -157,17 +167,20 @@ resolveSpouseBranch()
 ## Code Quality
 
 ### ✅ Clean & Maintainable
+
 - **No giant maps**: Logic is explicit conditionals
 - **Well-commented**: Each section clearly labeled
 - **Small functions**: ~20-40 lines each
 - **Readable**: If/else logic, easy to understand
 
 ### ✅ Backward Compatible
+
 - **Existing families intact**: Cousins, blood relations unchanged
 - **No breaking changes**: Old paths still resolve correctly
 - **UI enhancement only**: New buttons don't interfere
 
 ### ✅ Tested
+
 - All 16 new relationships tested
 - All edge cases covered
 - All existing relationships still work
@@ -177,6 +190,7 @@ resolveSpouseBranch()
 ## Limitations & Future Extensions
 
 ### Current Limitations
+
 1. **No spouse chaining** (intentional)
    - Can't do: `wife` → `father` → `brother` (depth > 2)
    - By design: Keeps complexity manageable
@@ -189,11 +203,12 @@ resolveSpouseBranch()
    - Assumes current relationship only
 
 ### Easy Extensions (If Needed)
+
 ```
 [ ] Spouse's nieces/nephews (extend depth to 3)
     Old: wife → brother → son
     New: wife → older_brother → son → son
-    
+
 [ ] Same-sex marriage (swap logic)
     Old: husband, wife (assumed M-F)
     New: Add spouse1, spouse2 for flexibility
@@ -208,10 +223,12 @@ resolveSpouseBranch()
 ## Files Modified
 
 ### Created
+
 - **`IN_LAW_IMPLEMENTATION.md`** — Detailed architecture guide
 - **`test_inlaw.js`** — Test harness (23 test cases)
 
 ### Modified
+
 - **`src/utils/resolver.js`**
   - Added `BUTTON_SECTIONS` entry for 姻亲
   - Added 3 detection functions
@@ -226,12 +243,14 @@ resolveSpouseBranch()
 ## Build Status
 
 ✅ **Builds successfully**
+
 ```
 ✓ 32 modules transformed
 ✓ built in 537ms
 ```
 
 ✅ **All tests pass**
+
 ```
 Passed: 23/23
 Failed: 0/23
@@ -242,6 +261,7 @@ Failed: 0/23
 ## Next Steps
 
 ### To Deploy
+
 ```bash
 npm run build
 git add .
@@ -250,6 +270,7 @@ git push
 ```
 
 ### To Test Locally
+
 ```bash
 npm run dev
 # Try: 老婆 → 爸爸 → =  (should show 岳父)
@@ -257,6 +278,7 @@ npm run dev
 ```
 
 ### To Understand Better
+
 Read: [`IN_LAW_IMPLEMENTATION.md`](./IN_LAW_IMPLEMENTATION.md)
 
 ---
@@ -268,6 +290,6 @@ Read: [`IN_LAW_IMPLEMENTATION.md`](./IN_LAW_IMPLEMENTATION.md)
 ✅ **All constraints met**  
 ✅ **23/23 tests passing**  
 ✅ **No breaking changes**  
-✅ **Ready to deploy**  
+✅ **Ready to deploy**
 
 The resolver is now extensible, maintainable, and ready for future enhancements!

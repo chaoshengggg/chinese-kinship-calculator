@@ -281,7 +281,7 @@ Generation Level Visualization:
          └─→ wife/husband
              │
   Your Siblings' Spouse (Supported ✓)
-  
+
   (Max Depth = 2: Spouse + 1 Relative)
 ```
 
@@ -293,14 +293,14 @@ Generation Level Visualization:
 Too Deep (>2 levels):
   [wife, father, brother, son]  ← 4 levels, blocked
   [husband, mother, daughter]   ← 3 levels, blocked
-  
+
 Why? Maintains simplicity and avoids exponential complexity
 
 Invalid Combinations:
   [older_brother, husband]      ← Invalid (brother→husband)
   [younger_sister, wife]        ← Invalid (sister→wife)
   [father, wife]                ← Invalid (not direct spouse)
-  
+
 Why? Only specific patterns are semantically valid
 ```
 
@@ -316,35 +316,37 @@ If you want to support `wife` → `older_brother` → `daughter`:
 function resolveSpouseBranch(path) {
   // OLD: max depth = 2
   if (path.length > 2) {
-    return '暂不支持更深层的姻亲关系'
+    return "暂不支持更深层的姻亲关系";
   }
-  
+
   // NEW: allow depth 3
-  if (path.length > 3) {  // Changed from > 2
-    return '暂不支持更深层的姻亲关系'
+  if (path.length > 3) {
+    // Changed from > 2
+    return "暂不支持更深层的姻亲关系";
   }
-  
-  const [t1, t2, t3] = path  // Add t3
-  
+
+  const [t1, t2, t3] = path; // Add t3
+
   // ... existing code ...
-  
+
   // NEW: Handle spouse's siblings' children
   if (path.length === 3) {
-    const isWife = t1 === 'wife'
-    const isHusband = t1 === 'husband'
-    const isSibling = t2 === 'older_brother' || 
-                      t2 === 'younger_brother' ||
-                      t2 === 'older_sister' ||
-                      t2 === 'younger_sister'
-    const isChild = t3 === 'son' || t3 === 'daughter'
-    
+    const isWife = t1 === "wife";
+    const isHusband = t1 === "husband";
+    const isSibling =
+      t2 === "older_brother" ||
+      t2 === "younger_brother" ||
+      t2 === "older_sister" ||
+      t2 === "younger_sister";
+    const isChild = t3 === "son" || t3 === "daughter";
+
     if (isSibling && isChild) {
       // Add logic here
       // e.g., wife + older_brother + son = 大舅子的儿子
     }
   }
-  
-  return '暂时无法解析'
+
+  return "暂时无法解析";
 }
 ```
 

@@ -137,30 +137,72 @@ function isSiblingSpouse(path) {
   return isSibling && isSpouse
 }
 
+/**
+ * Check if path[1] and path[2] form parent + parent's sibling
+ * Used for: spouse → parent → parent's sibling
+ */
+function isParentSibling(path) {
+  if (path.length !== 3) return false
+  const [, t2, t3] = path
+  const isParent = t2 === 'father' || t2 === 'mother'
+  const isSibling =
+    t3 === 'older_brother' ||
+    t3 === 'younger_brother' ||
+    t3 === 'older_sister' ||
+    t3 === 'younger_sister'
+  return isParent && isSibling
+}
+
 // ============ SPOUSE BRANCH RESOLVER ============
 
 /**
- * Resolve in-law relationships starting with spouse token
- * Supported paths:
- * A) wife + [father/mother] → 岳父/岳母
- * B) husband + [father/mother] → 公公/婆婆
- * C) wife + [sibling] → 大舅子/小舅子/姨子
- * D) husband + [sibling] → 大伯/小叔/姑仔
+ * Resolve spouse's parent's siblings (grandparent-level relatives)
+ * Paths: [spouse, parent, parent's sibling]
+ * 
+ * Rules: Do NOT differentiate spouse type (wife/husband) since outputs are identical
+ * 
+ * Examples:
+ * - wife → mother → older_brother → 舅公
+ * - husband → mother → older_brother → 舅公 (same result)
+ * - wife → father → younger_brother → 叔公
+ * - husband → father → younger_brother → 叔公 (same result)
  */
-function resolveSpouseBranch(path) {
-  // Depth restriction: max 2 levels (spouse + one relative)
-  if (path.length > 2) {
-    return '暂不支持更深层的姻亲关系'
+function resolveSpouseParentSibling(path) {
+  const [, parent, sibling] = path
+  
+  const isFather = parent === 'father'
+  const isMother = parent === 'mother'
+  
+  const isMaleSibling = 
+    sibling === 'older_brother' || sibling === 'younger_brother'
+  const isFemaleSibling = 
+    sibling === 'older_sister' || sibling === 'younger_sister'
+
+  // === Mother's siblings → 舅公/姨婆 ===
+  if (isMother) {
+    if (isMaleSibling) return '舅公'      // Mother's brother
+    if (isFemaleSibling) return '姨婆'    // Mother's sister
   }
 
+  // === Father's siblings → 伯公/叔公/姑婆 ===
+  if (isFather) {
+    if (sibling === 'older_brother') return '伯公'     // Father's older brother
+    if (sibling === 'younger_brother') return '叔公'   // Father's younger brother
+    if (isFemaleSibling) return '姑婆'                 // Father's sister
+  }
+
+  return null
+}
+
+/**
+ * Resolve direct spouse relatives (depth 2)
+ * A) Spouse's Parents
+ * B) Spouse's Siblings
+ */
+function resolveSpouseDirect(path) {
   const [t1, t2] = path
   const isWife = t1 === 'wife'
   const isHusband = t1 === 'husband'
-
-  // Single token spouse
-  if (path.length === 1) {
-    return isWife ? '老婆' : '老公'
-  }
 
   // === A) Spouse's Parents ===
   if (t2 === 'father') {
@@ -170,7 +212,7 @@ function resolveSpouseBranch(path) {
     return isWife ? '岳母' : '婆婆'
   }
 
-  // === C) Wife's Siblings ===
+  // === B) Wife's Siblings ===
   if (isWife) {
     if (t2 === 'older_brother') return '大舅子'
     if (t2 === 'younger_brother') return '小舅子'
@@ -178,12 +220,49 @@ function resolveSpouseBranch(path) {
     if (t2 === 'younger_sister') return '姨子'
   }
 
-  // === D) Husband's Siblings ===
+  // === B) Husband's Siblings ===
   if (isHusband) {
     if (t2 === 'older_brother') return '大伯'
     if (t2 === 'younger_brother') return '小叔'
     if (t2 === 'older_sister') return '姑仔'
     if (t2 === 'younger_sister') return '姑仔'
+  }
+
+  return '暂时无法解析'
+}
+
+/**
+ * Resolve in-law relationships starting with spouse token
+ * Modular depth-based routing:
+ * - Depth 1: Single spouse token (老婆/老公)
+ * - Depth 2: Spouse + direct relative (parents/siblings)
+ * - Depth 3: Spouse + parent + parent's sibling
+ * - Depth > 3: Not supported
+ */
+function resolveSpouseBranch(path) {
+  // Depth guard
+  if (path.length > 3) {
+    return '暂不支持更深层的姻亲关系'
+  }
+
+  const [t1] = path
+  const isWife = t1 === 'wife'
+  const isHusband = t1 === 'husband'
+
+  // === Depth 1: Single spouse token ===
+  if (path.length === 1) {
+    return isWife ? '老婆' : '老公'
+  }
+
+  // === Depth 2: Direct relatives ===
+  if (path.length === 2) {
+    return resolveSpouseDirect(path)
+  }
+
+  // === Depth 3: Parent's siblings ===
+  if (path.length === 3 && isParentSibling(path)) {
+    const result = resolveSpouseParentSibling(path)
+    if (result !== null) return result
   }
 
   return '暂时无法解析'
@@ -258,7 +337,8 @@ export function resolveRelationship(pathArray, relativeAge) {
 
   // Spouse branch: wife/husband + ...
   if (isSpouseBranch(pathArray)) {
-    return resolveSpouseBranch(pathArray)
+    const result = resolveSpouseBranch(pathArray)
+    if (result) return result
   }
 
   // Sibling's spouse: sibling + wife/husband

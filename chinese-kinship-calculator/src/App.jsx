@@ -125,7 +125,7 @@ function App() {
 
           {/* Button Grid */}
           <div className="space-y-4">
-            {/* Row 1: Clear, Backspace, spacer, Equals */}
+            {/* Row 1: Clear, Backspace, Equals */}
             <div className="grid grid-cols-4 gap-2">
               <button
                 onClick={handleClear}
@@ -135,14 +135,14 @@ function App() {
               </button>
               <button
                 onClick={handleBackspace}
-                className="calc-btn bg-[#505050] hover:bg-[#5a5a5c] active:bg-[#3d3d3f] col-span-2"
+                className="calc-btn bg-[#505050] hover:bg-[#5a5a5c] active:bg-[#3d3d3f]"
               >
                 ⌫
               </button>
               <button
                 onClick={handleEquals}
                 disabled={!canCompute}
-                className="calc-btn bg-[#ff9f0a] hover:bg-[#ffb340] active:bg-[#cc7e08] disabled:opacity-50 disabled:cursor-not-allowed text-white"
+                className="calc-btn bg-[#ff9f0a] hover:bg-[#ffb340] active:bg-[#cc7e08] disabled:opacity-50 disabled:cursor-not-allowed text-white col-span-2"
               >
                 =
               </button>
