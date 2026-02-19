@@ -21,6 +21,13 @@ export const BUTTON_SECTIONS = [
     ],
   },
   {
+    title: '姻亲',
+    buttons: [
+      { label: '老公', token: 'husband' },
+      { label: '老婆', token: 'wife' },
+    ],
+  },
+  {
     title: '兄弟姐妹',
     buttons: [
       { label: '哥哥', token: 'older_brother' },
@@ -105,6 +112,114 @@ export function isCousinScenario(path) {
   return isParent && isParentSibling && isChild
 }
 
+// ============ SPOUSE & IN-LAW DETECTION ============
+
+/**
+ * Check if path starts with spouse token (husband or wife)
+ */
+function isSpouseBranch(path) {
+  return path.length > 0 && (path[0] === 'husband' || path[0] === 'wife')
+}
+
+/**
+ * Check if path has pattern: sibling + spouse
+ * e.g., [older_brother, wife] or [younger_sister, husband]
+ */
+function isSiblingSpouse(path) {
+  if (path.length !== 2) return false
+  const [t1, t2] = path
+  const isSibling =
+    t1 === 'older_brother' ||
+    t1 === 'younger_brother' ||
+    t1 === 'older_sister' ||
+    t1 === 'younger_sister'
+  const isSpouse = t2 === 'husband' || t2 === 'wife'
+  return isSibling && isSpouse
+}
+
+// ============ SPOUSE BRANCH RESOLVER ============
+
+/**
+ * Resolve in-law relationships starting with spouse token
+ * Supported paths:
+ * A) wife + [father/mother] → 岳父/岳母
+ * B) husband + [father/mother] → 公公/婆婆
+ * C) wife + [sibling] → 大舅子/小舅子/姨子
+ * D) husband + [sibling] → 大伯/小叔/姑仔
+ */
+function resolveSpouseBranch(path) {
+  // Depth restriction: max 2 levels (spouse + one relative)
+  if (path.length > 2) {
+    return '暂不支持更深层的姻亲关系'
+  }
+
+  const [t1, t2] = path
+  const isWife = t1 === 'wife'
+  const isHusband = t1 === 'husband'
+
+  // Single token spouse
+  if (path.length === 1) {
+    return isWife ? '老婆' : '老公'
+  }
+
+  // === A) Spouse's Parents ===
+  if (t2 === 'father') {
+    return isWife ? '岳父' : '公公'
+  }
+  if (t2 === 'mother') {
+    return isWife ? '岳母' : '婆婆'
+  }
+
+  // === C) Wife's Siblings ===
+  if (isWife) {
+    if (t2 === 'older_brother') return '大舅子'
+    if (t2 === 'younger_brother') return '小舅子'
+    if (t2 === 'older_sister') return '姨子'
+    if (t2 === 'younger_sister') return '姨子'
+  }
+
+  // === D) Husband's Siblings ===
+  if (isHusband) {
+    if (t2 === 'older_brother') return '大伯'
+    if (t2 === 'younger_brother') return '小叔'
+    if (t2 === 'older_sister') return '姑仔'
+    if (t2 === 'younger_sister') return '姑仔'
+  }
+
+  return '暂时无法解析'
+}
+
+// ============ SIBLING SPOUSE RESOLVER ============
+
+/**
+ * Resolve sibling's spouse relationships
+ * Supported: [sibling, spouse]
+ * e.g., older_brother + wife → 嫂子
+ */
+function resolveSiblingSpouse(path) {
+  const [t1, t2] = path
+  const isWife = t2 === 'wife'
+  const isHusband = t2 === 'husband'
+
+  // === Sibling's Wife ===
+  if (isWife) {
+    if (t1 === 'older_brother') return '嫂子'
+    if (t1 === 'younger_brother') return '弟媳'
+    if (t1 === 'older_sister') return null // invalid
+    if (t1 === 'younger_sister') return null // invalid
+  }
+
+  // === Sibling's Husband ===
+  if (isHusband) {
+    if (t1 === 'older_sister') return '姐夫'
+    if (t1 === 'younger_sister') return '妹夫'
+    if (t1 === 'older_brother') return null // invalid
+    if (t1 === 'younger_brother') return null // invalid
+  }
+
+  return null
+}
+
 function resolveFirstCousin(path, relativeAge) {
   // path: [father|mother] + [parent's sibling] + [son|daughter]
   // relativeAge: 'older' | 'younger'
@@ -139,10 +254,26 @@ function resolveFirstCousin(path, relativeAge) {
 export function resolveRelationship(pathArray, relativeAge) {
   if (!Array.isArray(pathArray) || pathArray.length === 0) return ''
 
+  // === Route to appropriate resolver ===
+
+  // Spouse branch: wife/husband + ...
+  if (isSpouseBranch(pathArray)) {
+    return resolveSpouseBranch(pathArray)
+  }
+
+  // Sibling's spouse: sibling + wife/husband
+  if (isSiblingSpouse(pathArray)) {
+    const result = resolveSiblingSpouse(pathArray)
+    if (result !== null) return result
+    return '暂时无法解析'
+  }
+
+  // First cousin: parent + parent's sibling + child
   if (isCousinScenario(pathArray)) {
     return resolveFirstCousin(pathArray, relativeAge)
   }
 
+  // Blood relations (direct mapping)
   const key = pathArray.join('_')
   return relationshipMap[key] ?? '暂时无法解析'
 }
