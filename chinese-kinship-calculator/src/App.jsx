@@ -60,10 +60,21 @@ function App() {
   return (
     <div className="min-h-screen bg-[#1c1c1e] flex items-center justify-center p-6">
       <div className="w-full max-w-[340px]">
-        {/* App Title */}
-        <h1 className="text-2xl font-semibold text-center text-white/90 mb-6 tracking-tight">
-          叫对了吗？
-        </h1>
+        {/* App Title with Humorous Styling - Centered */}
+        <div className="mb-8 text-center flex flex-col items-center justify-center">
+          <h1 className="text-5xl font-extrabold tracking-wider mb-2" style={{
+            fontFamily: "'Comic Sans MS', 'Chalkboard SE', cursive",
+            background: 'linear-gradient(45deg, #FF6B6B, #FFE66D, #95E1D3, #F38181, #AA96DA)',
+            backgroundSize: '300%',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            animation: 'gradient 3s ease infinite'
+          }}>
+            叫对了吗？
+          </h1>
+          <div className="text-sm text-white/60 italic">~ 我也不知道你们之间啥关系 ~</div>
+        </div>
 
         {/* Calculator Body - macOS style */}
         <div className="bg-[#2d2d2f] rounded-[20px] p-5 shadow-2xl border border-white/5">

@@ -1,1 +1,108 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
+<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+    </style>
+  </defs>
+  
+  <!-- Dog body -->
+  <ellipse cx="150" cy="160" rx="90" ry="100" fill="#C9844F"/>
+  
+  <!-- Back paw left -->
+  <ellipse cx="110" cy="240" rx="25" ry="35" fill="#A0694D"/>
+  
+  <!-- Back paw right -->
+  <ellipse cx="190" cy="240" rx="25" ry="35" fill="#A0694D"/>
+  
+  <!-- Front paw left -->
+  <ellipse cx="120" cy="255" rx="20" ry="30" fill="#8B5A3C"/>
+  
+  <!-- Front paw right -->
+  <ellipse cx="180" cy="255" rx="20" ry="30" fill="#8B5A3C"/>
+  
+  <!-- Chest/belly - lighter -->
+  <ellipse cx="150" cy="180" rx="60" ry="70" fill="#E8C5A5"/>
+  
+  <!-- Head -->
+  <circle cx="150" cy="80" r="65" fill="#C9844F"/>
+  
+  <!-- Left ear -->
+  <ellipse cx="100" cy="30" rx="30" ry="50" fill="#A0694D" transform="rotate(-25 100 30)"/>
+  
+  <!-- Right ear -->
+  <ellipse cx="200" cy="30" rx="30" ry="50" fill="#A0694D" transform="rotate(25 200 30)"/>
+  
+  <!-- Snout area -->
+  <ellipse cx="150" cy="100" rx="45" ry="40" fill="#E8C5A5"/>
+  
+  <!-- Nose -->
+  <ellipse cx="150" cy="95" rx="15" ry="12" fill="#2C1810"/>
+  
+  <!-- Tongue sticking out -->
+  <ellipse cx="150" cy="115" rx="12" ry="16" fill="#FF6B9D"/>
+  
+  <!-- Left eye glasses frame -->
+  <g>
+    <!-- Lens 1 -->
+    <rect x="110" y="60" width="35" height="35" rx="8" fill="none" stroke="#3D3D3D" stroke-width="3"/>
+    <!-- Left lens glass -->
+    <rect x="112" y="62" width="31" height="31" rx="6" fill="#E8F4F8" opacity="0.6"/>
+    <!-- Shine on left lens -->
+    <ellipse cx="120" cy="68" rx="8" ry="6" fill="#FFFFFF" opacity="0.8"/>
+  </g>
+  
+  <!-- Right eye glasses frame -->
+  <g>
+    <!-- Lens 2 -->
+    <rect x="155" y="60" width="35" height="35" rx="8" fill="none" stroke="#3D3D3D" stroke-width="3"/>
+    <!-- Right lens glass -->
+    <rect x="157" y="62" width="31" height="31" rx="6" fill="#E8F4F8" opacity="0.6"/>
+    <!-- Shine on right lens -->
+    <ellipse cx="165" cy="68" rx="8" ry="6" fill="#FFFFFF" opacity="0.8"/>
+  </g>
+  
+  <!-- Bridge of glasses -->
+  <line x1="145" y1="77" x2="155" y2="77" stroke="#3D3D3D" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Left eye pupil -->
+  <circle cx="127" cy="77" r="6" fill="#2C1810"/>
+  
+  <!-- Right eye pupil -->
+  <circle cx="172" cy="77" r="6" fill="#2C1810"/>
+  
+  <!-- Left eye shine -->
+  <circle cx="129" cy="75" r="2" fill="#FFFFFF"/>
+  
+  <!-- Right eye shine -->
+  <circle cx="174" cy="75" r="2" fill="#FFFFFF"/>
+  
+  <!-- Mouth smile lines -->
+  <path d="M 135 105 Q 150 115 165 105" stroke="#2C1810" stroke-width="2" fill="none" stroke-linecap="round"/>
+  
+  <!-- Peace sign hand (right side) -->
+  <g>
+    <!-- Arm -->
+    <rect x="220" y="120" width="35" height="50" rx="18" fill="#C9844F"/>
+    <!-- Hand base -->
+    <circle cx="252" cy="180" r="22" fill="#E8C5A5"/>
+    <!-- Thumb -->
+    <ellipse cx="235" cy="190" rx="10" ry="15" fill="#C9844F"/>
+    <!-- Peace fingers 1 -->
+    <line x1="247" y1="160" x2="240" y2="135" stroke="#2C1810" stroke-width="5" stroke-linecap="round"/>
+    <!-- Peace fingers 2 -->
+    <line x1="257" y1="160" x2="267" y2="132" stroke="#2C1810" stroke-width="5" stroke-linecap="round"/>
+    <!-- Finger separators -->
+    <path d="M 250 180 L 248 165" stroke="#E8C5A5" stroke-width="2"/>
+  </g>
+  
+  <!-- Happy sparkles around -->
+  <circle cx="60" cy="40" r="8" fill="#FFD700" opacity="0.8"/>
+  <circle cx="240" cy="50" r="6" fill="#FFD700" opacity="0.7"/>
+  <circle cx="50" cy="160" r="7" fill="#FFE66D" opacity="0.6"/>
+  
+  <!-- Tail (wagging animation ready) -->
+  <path d="M 220 160 Q 240 140 250 110" stroke="#A0694D" stroke-width="25" fill="none" stroke-linecap="round" opacity="0.8" style="animation: bounce 1s infinite"/>
+</svg>
