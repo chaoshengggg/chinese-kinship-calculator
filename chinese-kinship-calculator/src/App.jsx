@@ -62,16 +62,17 @@ function App() {
       <div className="w-full max-w-[340px]">
         {/* App Title with Humorous Styling - Centered */}
         <div className="mb-8 w-full flex flex-col items-center justify-center mx-auto">
-          <h1 className="text-5xl font-extrabold tracking-wider mb-2 text-center w-full" style={{
+          <h1 className="text-5xl font-extrabold tracking-wider mb-2 text-center mx-auto inline-block whitespace-nowrap" style={{
             fontFamily: "'Comic Sans MS', 'Chalkboard SE', cursive",
             background: 'linear-gradient(45deg, #FF6B6B, #FFE66D, #95E1D3, #F38181, #AA96DA)',
             backgroundSize: '300%',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
-            animation: 'gradient 3s ease infinite'
+            animation: 'gradient 3s ease infinite',
+            whiteSpace: 'nowrap'
           }}>
-            叫对了吗？
+            你都叫对了吗？
           </h1>
           <div className="text-sm text-white/60 italic w-full text-center">~ 我也不知道你们之间啥关系 ~</div>
         </div>

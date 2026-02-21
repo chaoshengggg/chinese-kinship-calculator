@@ -5,15 +5,6 @@
 
 export const BUTTON_SECTIONS = [
   {
-    title: '祖父母',
-    buttons: [
-      { label: '爷爷', token: 'paternal_grandfather' },
-      { label: '奶奶', token: 'paternal_grandmother' },
-      { label: '外公', token: 'maternal_grandfather' },
-      { label: '外婆', token: 'maternal_grandmother' },
-    ],
-  },
-  {
     title: '父母',
     buttons: [
       { label: '爸爸', token: 'father' },
@@ -330,6 +321,148 @@ function resolveFirstCousin(path, relativeAge) {
   return `${familyPrefix}${title}`
 }
 
+// ============ GRAND-UNCLE / AUNT RULES ============
+
+/**
+ * Detect pattern: [parent, parent, parent's sibling]
+ * Examples:
+ * - father, father, older_brother  (爸爸的爸爸的哥哥)
+ * - father, mother, older_brother  (爸爸的妈妈的哥哥)
+ * - mother, father, older_sister  (妈妈的爸爸的姐姐)
+ */
+function isGrandparentSibling(path) {
+  if (!Array.isArray(path) || path.length !== 3) return false
+  const [t1, t2, t3] = path
+  const isParent = t1 === 'father' || t1 === 'mother'
+  const isGrand = t2 === 'father' || t2 === 'mother'
+  const isSibling =
+    t3 === 'older_brother' ||
+    t3 === 'younger_brother' ||
+    t3 === 'older_sister' ||
+    t3 === 'younger_sister'
+  return isParent && isGrand && isSibling
+}
+
+/**
+ * Resolve grand-uncles / grand-aunts (grandparent's siblings)
+ * Uses rule composition rather than hardcoded full strings.
+ * Comments explain mapping decisions and fallbacks.
+ */
+function resolveGrandparentSibling(path) {
+  const [parent, grandparent, sibling] = path
+
+  const isPaternalSide = parent === 'father'
+  const isMaternalSide = parent === 'mother'
+  const isGrandfather = grandparent === 'father'
+  const isGrandmother = grandparent === 'mother'
+
+  const isMaleSibling = sibling === 'older_brother' || sibling === 'younger_brother'
+  const isFemaleSibling = sibling === 'older_sister' || sibling === 'younger_sister'
+
+  // Father-side (爸爸 branch)
+  if (isPaternalSide) {
+    // 爸爸的爸爸 (paternal grandfather) siblings
+    if (isGrandfather) {
+      if (sibling === 'older_brother') return '伯公'
+      if (sibling === 'younger_brother') return '叔公'
+      if (isFemaleSibling) return '姑婆' // grandfather's sister
+    }
+    // 爸爸的妈妈 (paternal grandmother) siblings
+    if (isGrandmother) {
+      if (isMaleSibling) return '舅公'
+      if (isFemaleSibling) return '姨婆'
+    }
+  }
+
+  // Mother-side (妈妈 branch)
+  if (isMaternalSide) {
+    // 妈妈的爸爸 (maternal grandfather) siblings
+    if (isGrandfather) {
+      if (isMaleSibling) return '舅公'
+      if (isFemaleSibling) return '姑婆'
+    }
+    // 妈妈的妈妈 (maternal grandmother) siblings
+    if (isGrandmother) {
+      if (isMaleSibling) return '舅公'
+      if (isFemaleSibling) return '姨婆'
+    }
+  }
+
+  // Fallback: if unmatched, signal unresolved
+  return '关系太复杂，我也不敢乱叫'
+}
+
+// ============ UNCLE/AUNT SPOUSE RULES ============
+
+/**
+ * Detect pattern: [parent, parent's sibling, spouse]
+ * Examples:
+ * - father, older_brother, wife  -> 爸爸的哥哥的老婆 => 伯母
+ * - mother, older_sister, husband -> 妈妈的姐姐的老公 => 姨丈
+ */
+function isParentSiblingSpouse(path) {
+  if (!Array.isArray(path) || path.length !== 3) return false
+  const [t1, t2, t3] = path
+  const isParent = t1 === 'father' || t1 === 'mother'
+  const isSibling =
+    t2 === 'older_brother' ||
+    t2 === 'younger_brother' ||
+    t2 === 'older_sister' ||
+    t2 === 'younger_sister'
+  const isSpouse = t3 === 'wife' || t3 === 'husband'
+  return isParent && isSibling && isSpouse
+}
+
+/**
+ * Resolve uncle/aunt spouses according to rules:
+ * - Father's older brother's wife -> 伯母
+ * - Father's younger brother's wife -> 婶婶
+ * - Father's sister's husband -> 姑丈
+ * - Mother's brother's wife -> 舅妈
+ * - Mother's sister's husband -> 姨丈
+ * 
+ * Fallback behavior (when older/younger not specified) documented:
+ * - For brothers: default to the '叔叔' branch -> spouse = 婶婶
+ * - For sisters: default to 姑姑 group -> spouse = 姑丈
+ */
+function resolveParentSiblingSpouse(path) {
+  const [parent, sibling, spouse] = path
+
+  const isFatherSide = parent === 'father'
+  const isMotherSide = parent === 'mother'
+
+  // Brother -> spouse (wife)
+  if (sibling === 'older_brother' || sibling === 'younger_brother') {
+    if (spouse !== 'wife') return '关系太复杂，我也不敢乱叫' // brother's husband invalid
+    if (isFatherSide) {
+      if (sibling === 'older_brother') return '伯母'
+      if (sibling === 'younger_brother') return '婶婶'
+      // fallback for unspecified brother -> 婶婶
+      return '婶婶'
+    }
+    if (isMotherSide) {
+      // mother's brother's wife -> 舅妈
+      return '舅妈'
+    }
+  }
+
+  // Sister -> spouse (husband)
+  if (sibling === 'older_sister' || sibling === 'younger_sister') {
+    if (spouse !== 'husband') return '关系太复杂，我也不敢乱叫' // sister's wife invalid
+    if (isFatherSide) {
+      // father's sister's husband -> 姑丈
+      return '姑丈'
+    }
+    if (isMotherSide) {
+      // mother's sister's husband -> 姨丈
+      return '姨丈'
+    }
+  }
+
+  return '关系太复杂，我也不敢乱叫'
+}
+
+
 export function resolveRelationship(pathArray, relativeAge) {
   if (!Array.isArray(pathArray) || pathArray.length === 0) return ''
 
@@ -351,6 +484,16 @@ export function resolveRelationship(pathArray, relativeAge) {
   // First cousin: parent + parent's sibling + child
   if (isCousinScenario(pathArray)) {
     return resolveFirstCousin(pathArray, relativeAge)
+  }
+
+  // Grandparent's sibling: parent + grandparent + grandparent's sibling
+  if (isGrandparentSibling(pathArray)) {
+    return resolveGrandparentSibling(pathArray)
+  }
+
+  // Parent's sibling's spouse: parent + sibling + spouse
+  if (isParentSiblingSpouse(pathArray)) {
+    return resolveParentSiblingSpouse(pathArray)
   }
 
   // Blood relations (direct mapping)
