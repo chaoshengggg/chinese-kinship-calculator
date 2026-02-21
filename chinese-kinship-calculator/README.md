@@ -1,4 +1,4 @@
-# 叫对了吗？ — Chinese Kinship Calculator
+# 你都叫对了吗？ — Chinese Kinship Calculator
 
 A React + Vite app to help users learn and remember Chinese kinship relationships (family relationships).
 
